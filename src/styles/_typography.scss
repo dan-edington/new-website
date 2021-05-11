@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Inter:wght@200;400&display=swap');
+
+.body-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  font-size: 24px;
+  letter-spacing: 4.5px;
+  line-height: 29.05px;
+  color: var(--text-colour);
+}
+
+.heading-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 96px;
+  font-weight: normal;
+  letter-spacing: 29px;
+  text-transform: uppercase;
+  color: var(--text-colour);
+}
