@@ -1,19 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@1&family=Inter:wght@200;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;500;700&display=swap');
 
-.body-text {
-  font-family: 'Inter', sans-serif;
-  font-weight: 200;
-  font-size: 24px;
-  letter-spacing: 4.5px;
-  line-height: 29.05px;
-  color: var(--text-colour);
+h1 {
+  position: absolute;
+  left: 76.7rem;
+  top: 15.8rem;
+  font-size: 14.4rem;
+  font-weight: 700;
+  line-height: 17.4rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: -0.06em;
 }
 
-.heading-text {
-  font-family: 'DM Serif Display', serif;
-  font-size: 96px;
-  font-weight: normal;
-  letter-spacing: 29px;
-  text-transform: uppercase;
-  color: var(--text-colour);
+p.subtitle {
+  position: absolute;
+  left: 38.3rem;
+  top: 38.9rem;
+  font-weight: 500;
+  font-size: 7.2rem;
+  line-height: 8.7rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: -0.06em;
+}
+
+ul.skills {
+  position: absolute;
+  left: 116.3rem;
+  top: 48.9rem;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    font-size: 3.6rem;
+    font-weight: 200;
+    line-height: 4.4rem;
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.06em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+p.contact {
+  position: absolute;
+  left: 116.4rem;
+  top: 88.2rem;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 1.8rem;
+  line-height: 2.2rem;
+  letter-spacing: -0.06em;
+
+  a {
+    display: inline;
+    text-decoration: underline;
+    color: inherit;
+  }
 }
