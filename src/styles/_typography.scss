@@ -29,7 +29,7 @@ p.subtitle {
 ul.skills {
   position: absolute;
   left: 116.3rem;
-  top: 48.9rem;
+  top: 51.1rem;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -41,7 +41,7 @@ ul.skills {
     display: flex;
     align-items: center;
     letter-spacing: -0.06em;
-    margin-bottom: 2.2rem;
+    margin-bottom: 1.3rem;
 
     &:last-child {
       margin-bottom: 0;
@@ -50,14 +50,16 @@ ul.skills {
 }
 
 p.contact {
+  width: 38rem;
+  height: 5.4rem;
   position: absolute;
   left: 116.4rem;
-  top: 88.2rem;
+  top: 82.2rem;
   font-family: Inter;
   font-style: normal;
   font-weight: 300;
   font-size: 1.8rem;
-  line-height: 2.2rem;
+  line-height: 4.4rem;
   letter-spacing: -0.06em;
 
   a {

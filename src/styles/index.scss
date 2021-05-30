@@ -20,3 +20,10 @@ main {
   height: 100%;
   position: relative;
 }
+
+#gl {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
