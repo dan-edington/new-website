@@ -110,7 +110,9 @@ const particles = () => {
   };
 
   clock.start();
-
+  if (glContainer) {
+    glContainer.style.visibility = 'visible';
+  }
   tick();
 };
 
