@@ -3,28 +3,57 @@
 @import 'typography';
 
 html {
-  font-size: calc(100vw / 1920 * 10);
+  font-size: calc(100vw / 1920 * 18);
+
+  @media (min-width: 1024px) {
+    font-size: calc(100vw / 1920 * 10);
+  }
 }
 
 body {
-  height: 100vh;
-  padding: 0;
+  height: auto;
+  min-height: auto;
+  padding: 8rem 8rem 0 8rem;
   margin: 0;
   font-family: 'Inter', sans-serif;
   color: var(--color-black);
   background-color: var(--color-yellow);
+  overflow-x: hidden;
+
+  @media (min-width: 1024px) {
+    padding: 0;
+    height: 100vh;
+  }
 }
 
 main {
-  width: 100%;
-  height: 100%;
   position: relative;
+  width: 100%;
+  height: auto;
+  top: 15vh;
+
+  @media (min-width: 1024px) {
+    width: 100%;
+    height: 100%;
+    top: 0;
+  }
 }
 
-#gl {
+#glContainer {
+  height: 20%;
+  width: 100%;
+  top: 0rem;
+  left: 0rem;
   position: absolute;
-  left: 0%;
-  top: 0%;
   z-index: -1;
   pointer-events: none;
+  margin: 0;
+  padding: 0;
+
+  @media (min-width: 1024px) {
+    height: 100%;
+    width: 50%;
+    top: 0;
+    left: 0;
+  }
 }

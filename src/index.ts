@@ -5,90 +5,113 @@ import * as THREE from 'three';
 import vertexShader from './shaders/vertex.glsl';
 import fragmentShader from './shaders/fragment.glsl';
 
-const getSize = () => {
-  return {
-    w: window.innerWidth,
-    h: window.innerHeight,
-  };
-};
+const particles = () => {
+  let shouldAnimate = true;
+  const glContainer = document.getElementById('glContainer');
+  const pixelRatio = 1;
+  const particleCount = 1000;
+  const clock = new THREE.Clock();
 
-const pr = 1;
+  // Test for prefers-reduced-motion
 
-const pcount = 1000;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion)');
 
-const s = getSize();
-
-const clock = new THREE.Clock();
-
-const renderer = new THREE.WebGLRenderer({
-  powerPreference: 'high-performance',
-  alpha: true,
-});
-
-renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.setSize(s.w, s.h);
-renderer.setPixelRatio(pr);
-document.body.appendChild(renderer.domElement);
-renderer.domElement.id = 'gl';
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(75, s.w / s.h, 0.1, 200);
-camera.position.z = 2;
-
-const createMesh = () => {
-  const geometry = new THREE.BufferGeometry();
-
-  const material = new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 },
-    },
-    vertexShader,
-    fragmentShader,
-    transparent: true,
-    depthWrite: false,
-    depthTest: false,
-  });
-
-  const particlemesh = new THREE.Points(geometry, material);
-
-  const vertices = new Float32Array(pcount * 3);
-
-  for (let i = 0; i < pcount; i++) {
-    const x = Math.random() * 2 - 1;
-    const y = Math.random() * 2 - 1;
-    const z = Math.random() * 2 - 1;
-    vertices.set([x, y, z], i * 3);
+  if (prefersReducedMotion.matches) {
+    shouldAnimate = false;
   }
 
-  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+  // Setup renderer
 
-  return particlemesh;
+  const getSize = () => {
+    return {
+      w: glContainer?.offsetWidth || 0,
+      h: glContainer?.offsetHeight || 0,
+    };
+  };
+
+  const size = getSize();
+
+  const renderer = new THREE.WebGLRenderer({
+    powerPreference: 'high-performance',
+    alpha: true,
+  });
+
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setSize(size.w, size.h);
+  renderer.setPixelRatio(pixelRatio);
+  glContainer?.appendChild(renderer.domElement);
+
+  // Setup Camera
+
+  const zoom = 600;
+  const camera = new THREE.PerspectiveCamera(75, size.w / size.h, 0.1, 600);
+  camera.position.z = zoom;
+  camera.fov = Math.atan(size.h / 2 / zoom) * 2 * (180 / Math.PI);
+
+  // Generate particles
+
+  const generateParticles = () => {
+    const geometry = new THREE.BufferGeometry();
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+      },
+      vertexShader,
+      fragmentShader,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    });
+
+    const particlemesh = new THREE.Points(geometry, material);
+
+    const vertices = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+      const x = Math.random() * 2 - 1;
+      const y = Math.random() * 2 - 1;
+      const z = Math.random() * 2 - 1;
+      vertices.set([x, y, z], i * 3);
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+    return particlemesh;
+  };
+
+  const particleMesh = generateParticles();
+  particleMesh.position.set(0, 0, 597);
+
+  const scene = new THREE.Scene();
+  scene.add(particleMesh, camera);
+
+  // Setup resize
+
+  const resize = () => {
+    const s = getSize();
+    renderer.setSize(s.w, s.h);
+    camera.aspect = s.w / s.h;
+    camera.updateProjectionMatrix();
+  };
+
+  window.addEventListener('resize', resize);
+
+  const tick = () => {
+    particleMesh.material.uniforms.uTime.value = shouldAnimate
+      ? clock.getElapsedTime()
+      : Math.random() * 9;
+
+    renderer.render(scene, camera);
+
+    if (shouldAnimate) {
+      requestAnimationFrame(tick);
+    }
+  };
+
+  clock.start();
+
+  tick();
 };
 
-const particlemesh = createMesh();
-
-camera.lookAt(particlemesh.position);
-
-scene.add(particlemesh, camera);
-
-const handleResize = () => {
-  const s = getSize();
-  camera.aspect = s.w / s.h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(s.w, s.h);
-};
-
-window.addEventListener('resize', handleResize);
-
-const tick = () => {
-  particlemesh.material.uniforms.uTime.value = clock.getElapsedTime();
-
-  renderer.render(scene, camera);
-
-  requestAnimationFrame(tick);
-};
-
-clock.start();
-
-tick();
+window.addEventListener('load', particles);
