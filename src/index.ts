@@ -1,19 +1,20 @@
 import './styles/index.scss';
 
 import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js';
 
-import boxVert from './shaders/box.vert';
-import boxFrag from './shaders/box.frag';
+import vertexShader from './shaders/vertex.glsl';
+import fragmentShader from './shaders/fragment.glsl';
 
 const getSize = () => {
   return {
-    w: window.innerWidth * 0.5,
+    w: window.innerWidth,
     h: window.innerHeight,
   };
 };
+
+const pr = 1;
+
+const pcount = 1000;
 
 const s = getSize();
 
@@ -26,7 +27,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.setSize(s.w, s.h);
-renderer.setPixelRatio(1);
+renderer.setPixelRatio(pr);
 document.body.appendChild(renderer.domElement);
 renderer.domElement.id = 'gl';
 
@@ -35,41 +36,55 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, s.w / s.h, 0.1, 200);
 camera.position.z = 2;
 
-const box = new THREE.Mesh(
-  new THREE.BoxBufferGeometry(1, 1, 1, 1, 1, 1),
-  new THREE.ShaderMaterial({
-    vertexShader: boxVert,
-    fragmentShader: boxFrag,
-  }),
-);
+const createMesh = () => {
+  const geometry = new THREE.BufferGeometry();
 
-scene.add(box, camera);
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+    },
+    vertexShader,
+    fragmentShader,
+    transparent: true,
+    depthWrite: false,
+    depthTest: false,
+  });
+
+  const particlemesh = new THREE.Points(geometry, material);
+
+  const vertices = new Float32Array(pcount * 3);
+
+  for (let i = 0; i < pcount; i++) {
+    const x = Math.random() * 2 - 1;
+    const y = Math.random() * 2 - 1;
+    const z = Math.random() * 2 - 1;
+    vertices.set([x, y, z], i * 3);
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+  return particlemesh;
+};
+
+const particlemesh = createMesh();
+
+camera.lookAt(particlemesh.position);
+
+scene.add(particlemesh, camera);
 
 const handleResize = () => {
   const s = getSize();
   camera.aspect = s.w / s.h;
   camera.updateProjectionMatrix();
   renderer.setSize(s.w, s.h);
-  effectComposer.setSize(s.w, s.h);
 };
 
 window.addEventListener('resize', handleResize);
 
-const effectComposer = new EffectComposer(renderer);
-effectComposer.setPixelRatio(1);
-effectComposer.setSize(s.w, s.h);
-
-const renderPass = new RenderPass(scene, camera);
-effectComposer.addPass(renderPass);
-
-const dotScreenPass = new DotScreenPass();
-effectComposer.addPass(dotScreenPass);
-
 const tick = () => {
-  box.rotation.y = Math.sin(clock.getElapsedTime() * 0.5);
-  box.rotation.z = Math.sin(clock.getElapsedTime() * 0.25);
+  particlemesh.material.uniforms.uTime.value = clock.getElapsedTime();
 
-  effectComposer.render();
+  renderer.render(scene, camera);
 
   requestAnimationFrame(tick);
 };
